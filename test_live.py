@@ -6,7 +6,7 @@ Quick test with a more common query
 import requests
 import json
 
-API_URL = "https://323b2ed7-b05f-4f72-a1cf-100a54adc7a3-00-ijp4vpyqd8ks.pike.replit.dev/api/search"
+API_URL = "https://autosearch-lxltfmhky-ensemblejbs-projects.vercel.app/api/search"
 
 # Test with a more established topic
 query = "What is artificial intelligence?"

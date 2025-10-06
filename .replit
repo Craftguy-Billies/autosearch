@@ -1,12 +1,12 @@
-run = "node server.js"
+run = "pip install -r requirements.txt && node server.js"
 hidden = [".config", "package-lock.json"]
-modules = ["nodejs-20"]
+modules = ["nodejs-20", "python-3.11"]
 
 [nix]
 channel = "stable-24_05"
 
 [deployment]
-run = ["sh", "-c", "node server.js"]
+run = ["sh", "-c", "pip install -r requirements.txt && node server.js"]
 
 [[ports]]
 localPort = 3000

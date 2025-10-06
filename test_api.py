@@ -10,7 +10,7 @@ import time
 import sys
 
 # Configuration
-API_URL = "https://autosearch-lxltfmhky-ensemblejbs-projects.vercel.app/api/search"
+API_URL = "https://autosearch-7tbx9qiv6-ensemblejbs-projects.vercel.app/api/search"
 TEST_QUERY = "When is the release date of Sora 2?"
 
 def print_separator():
@@ -20,7 +20,7 @@ def test_health_check():
     """Test the health endpoint"""
     print("Testing health check endpoint...")
     try:
-        response = requests.get("https://autosearch-lxltfmhky-ensemblejbs-projects.vercel.app/api/health", timeout=5)
+        response = requests.get("https://autosearch-7tbx9qiv6-ensemblejbs-projects.vercel.app/api/health", timeout=5)
         if response.status_code == 200:
             print("✅ Health check passed:", response.json())
             return True

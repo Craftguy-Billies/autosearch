@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Web Search API - Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --darker: #0f172a;
+            --light: #f1f5f9;
+            --border: #e2e8f0;
+            --text: #334155;
+            --text-light: #64748b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+
+        header h1 {
+            font-size: 3.5em;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            margin-top: -30px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: var(--light);
+            border-bottom: 2px solid var(--border);
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tab:hover {
+            background: white;
+            color: var(--primary);
+        }
+
+        .nav-tab.active {
+            background: white;
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 40px;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: var(--dark);
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        h3 {
+            color: var(--dark);
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card h4 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .code-block {
+            background: var(--darker);
+            color: #e2e8f0;
+            padding: 25px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .code-label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--primary);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .endpoint {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid var(--primary);
+        }
+
+        .method {
+            display: inline-block;
+            background: var(--success);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-weight: 700;
+            margin-right: 10px;
+            font-size: 0.9em;
+        }
+
+        .method.post {
+            background: var(--primary);
+        }
+
+        .endpoint-path {
+            font-family: 'Monaco', monospace;
+            font-size: 1.1em;
+            color: var(--dark);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: var(--light);
+        }
+
+        .try-it-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            border-radius: 15px;
+            color: white;
+            margin: 30px 0;
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .btn {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .result-box {
+            background: rgba(255,255,255,0.95);
+            color: var(--dark);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .result-box pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+            font-family: 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 5px 5px 5px 0;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+            opacity: 0.9;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            color: #1e40af;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            color: #92400e;
+        }
+
+        code {
+            background: var(--light);
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-family: 'Monaco', monospace;
+            font-size: 0.9em;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🔍 AI Web Search API</h1>
+            <p>Intelligent web search powered by AI - Fast, accurate, and easy to use</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="nav-tabs">
+                <div class="nav-tab active" onclick="switchTab('overview')">Overview</div>
+                <div class="nav-tab" onclick="switchTab('api')">API Reference</div>
+                <div class="nav-tab" onclick="switchTab('examples')">Examples</div>
+                <div class="nav-tab" onclick="switchTab('try')">Try It</div>
+            </div>
+
+            <!-- Overview Tab -->
+            <div class="tab-content active" id="overview">
+                <h2>Welcome to AI Web Search API</h2>
+                <p style="font-size: 1.1em; margin-bottom: 30px;">
+                    A powerful, AI-driven search API that scrapes the web, extracts relevant information, 
+                    and provides concise, accurate answers to your queries.
+                </p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🤖 AI-Powered</h4>
+                        <p>Uses advanced AI to optimize queries and extract relevant information from web pages.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>⚡ Fast & Efficient</h4>
+                        <p>Processes multiple search results concurrently with intelligent caching.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🎯 Accurate</h4>
+                        <p>Smart content extraction focuses only on relevant information, filtering out noise.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔄 Reliable</h4>
+                        <p>Built-in retry logic and fallback mechanisms ensure consistent results.</p>
+                    </div>
+                </div>
+
+                <h3>How It Works</h3>
+                <div style="padding: 20px; background: var(--light); border-radius: 10px; margin: 20px 0;">
+                    <ol style="padding-left: 20px; line-height: 2;">
+                        <li><strong>Query Optimization:</strong> AI analyzes your question and generates optimized search queries</li>
+                        <li><strong>Web Scraping:</strong> Fetches top results from search engines (DuckDuckGo)</li>
+                        <li><strong>Content Extraction:</strong> Extracts main content using Mozilla Readability</li>
+                        <li><strong>AI Summarization:</strong> Each result is analyzed and summarized by AI</li>
+                        <li><strong>Final Synthesis:</strong> All summaries are combined into one concise answer</li>
+                    </ol>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>💡 Pro Tip:</strong> For best results, ask specific questions like "When is the release date of Sora 2?" 
+                    rather than broad topics like "tell me about AI".
+                </div>
+            </div>
+
+            <!-- API Reference Tab -->
+            <div class="tab-content" id="api">
+                <h2>API Reference</h2>
+
+                <h3>Base URL</h3>
+                <div class="code-block">
+                    <pre>https://your-app.replit.app/api
+https://your-app.onrender.com/api</pre>
+                </div>
+
+                <h3>Authentication</h3>
+                <p>No authentication required. The API is free to use.</p>
+
+                <h3>Endpoints</h3>
+
+                <div class="endpoint">
+                    <span class="method">GET</span>
+                    <span class="endpoint-path">/api/health</span>
+                    <p style="margin-top: 10px;">Health check endpoint to verify the API is running.</p>
+                    
+                    <h4 style="margin-top: 20px;">Response:</h4>
+                    <div class="code-block">
+                        <div class="code-label">JSON</div>
+                        <pre>{
+  "status": "ok",
+  "timestamp": "2025-10-07T10:30:00.000Z"
+}</pre>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="endpoint-path">/api/search</span>
+                    <p style="margin-top: 10px;">Main search endpoint that processes queries and returns AI-generated answers.</p>
+                    
+                    <h4 style="margin-top: 20px;">Request Body:</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>query</code></td>
+                                <td>string</td>
+                                <td>Yes</td>
+                                <td>Your search question or query</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 style="margin-top: 20px;">Request Example:</h4>
+                    <div class="code-block">
+                        <div class="code-label">JSON</div>
+                        <pre>{
+  "query": "When is the release date of Sora 2?"
+}</pre>
+                    </div>
+
+                    <h4 style="margin-top: 20px;">Response:</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>query</code></td>
+                                <td>string</td>
+                                <td>Original query</td>
+                            </tr>
+                            <tr>
+                                <td><code>answer</code></td>
+                                <td>string</td>
+                                <td>AI-generated concise answer</td>
+                            </tr>
+                            <tr>
+                                <td><code>sources</code></td>
+                                <td>array</td>
+                                <td>List of source URLs and titles</td>
+                            </tr>
+                            <tr>
+                                <td><code>processingTime</code></td>
+                                <td>string</td>
+                                <td>Time taken to process (e.g., "15.3s")</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 style="margin-top: 20px;">Response Example:</h4>
+                    <div class="code-block">
+                        <div class="code-label">JSON</div>
+                        <pre>{
+  "query": "When is the release date of Sora 2?",
+  "answer": "Sora 2, OpenAI's next-generation video AI model, is expected to be released in late 2025. The exact date has not been officially announced, but industry sources suggest Q4 2025 as the target timeframe.",
+  "sources": [
+    {
+      "title": "OpenAI Sora 2: Everything We Know",
+      "url": "https://example.com/sora-2-release"
+    },
+    {
+      "title": "AI Video Generation: What's Coming in 2025",
+      "url": "https://example.com/ai-video-2025"
+    }
+  ],
+  "processingTime": "18.5s"
+}</pre>
+                    </div>
+                </div>
+
+                <h3>Error Responses</h3>
+                <div class="code-block">
+                    <div class="code-label">400 Bad Request</div>
+                    <pre>{
+  "error": "Query parameter is required and must be a non-empty string"
+}</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-label">500 Server Error</div>
+                    <pre>{
+  "error": "Search failed",
+  "message": "Detailed error message"
+}</pre>
+                </div>
+
+                <h3>Rate Limits</h3>
+                <div class="alert alert-warning">
+                    <strong>⚠️ Note:</strong> The API includes built-in delays (2s between requests) to avoid rate limiting from search engines. 
+                    Expect 15-30 seconds per search query. For heavy usage, consider hosting your own instance.
+                </div>
+            </div>
+
+            <!-- Examples Tab -->
+            <div class="tab-content" id="examples">
+                <h2>Code Examples</h2>
+
+                <h3>Python</h3>
+                <div class="code-block">
+                    <div class="code-label">Python</div>
+                    <pre>import requests
+
+# API endpoint
+url = "http://localhost:3000/api/search"
+
+# Your query
+payload = {
+    "query": "When is the release date of Sora 2?"
+}
+
+# Make the request
+response = requests.post(url, json=payload)
+
+# Check if successful
+if response.status_code == 200:
+    data = response.json()
+    print("Answer:", data['answer'])
+    print("\nSources:")
+    for source in data['sources']:
+        print(f"- {source['title']}: {source['url']}")
+    print(f"\nProcessing time: {data['processingTime']}")
+else:
+    print("Error:", response.json())</pre>
+                </div>
+
+                <h3>JavaScript (Node.js)</h3>
+                <div class="code-block">
+                    <div class="code-label">JavaScript</div>
+                    <pre>const axios = require('axios');
+
+async function search(query) {
+  try {
+    const response = await axios.post('http://localhost:3000/api/search', {
+      query: query
+    });
+    
+    console.log('Answer:', response.data.answer);
+    console.log('\nSources:');
+    response.data.sources.forEach(source => {
+      console.log(`- ${source.title}: ${source.url}`);
+    });
+    console.log(`\nProcessing time: ${response.data.processingTime}`);
+    
+  } catch (error) {
+    console.error('Error:', error.response?.data || error.message);
+  }
+}
+
+search("When is the release date of Sora 2?");</pre>
+                </div>
+
+                <h3>cURL</h3>
+                <div class="code-block">
+                    <div class="code-label">Bash</div>
+                    <pre>curl -X POST http://localhost:3000/api/search \
+  -H "Content-Type: application/json" \
+  -d '{"query": "When is the release date of Sora 2?"}'</pre>
+                </div>
+
+                <h3>JavaScript (Fetch API)</h3>
+                <div class="code-block">
+                    <div class="code-label">JavaScript</div>
+                    <pre>async function search(query) {
+  const response = await fetch('http://localhost:3000/api/search', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ query })
+  });
+  
+  const data = await response.json();
+  console.log(data);
+}
+
+search("When is the release date of Sora 2?");</pre>
+                </div>
+
+                <h3>Sample Queries</h3>
+                <div style="padding: 20px; background: var(--light); border-radius: 10px; margin: 20px 0;">
+                    <ul style="padding-left: 20px; line-height: 2;">
+                        <li>"When is the release date of Sora 2?"</li>
+                        <li>"What are the latest features in GPT-5?"</li>
+                        <li>"How does quantum computing work?"</li>
+                        <li>"Who won the 2024 Nobel Prize in Physics?"</li>
+                        <li>"What is the current price of Bitcoin?"</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Try It Tab -->
+            <div class="tab-content" id="try">
+                <h2>Try the API</h2>
+                <p style="font-size: 1.1em; margin-bottom: 30px;">
+                    Test the API directly from your browser. Enter a question and see the AI-powered results in real-time.
+                </p>
+
+                <div class="try-it-section">
+                    <div class="input-group">
+                        <label for="queryInput">🔍 Enter your question:</label>
+                        <input 
+                            type="text" 
+                            id="queryInput" 
+                            placeholder="e.g., When is the release date of Sora 2?"
+                            value="When is the release date of Sora 2?"
+                        >
+                    </div>
+                    
+                    <button class="btn" onclick="testSearch()" id="searchBtn">
+                        Search
+                    </button>
+
+                    <div id="resultBox" style="display: none;" class="result-box">
+                        <pre id="resultContent"></pre>
+                    </div>
+                </div>
+
+                <div class="alert alert-info" style="margin-top: 30px;">
+                    <strong>💡 Tips:</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li>Be specific with your questions</li>
+                        <li>Queries typically take 15-30 seconds to process</li>
+                        <li>The API searches, extracts, and summarizes content from multiple sources</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>🚀 AI Web Search API | Built with Node.js, Express, and AI</p>
+            <p style="margin-top: 10px; opacity: 0.8;">Deploy on Replit or Render for instant availability</p>
+        </div>
+    </footer>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        async function testSearch() {
+            const btn = document.getElementById('searchBtn');
+            const input = document.getElementById('queryInput');
+            const resultBox = document.getElementById('resultBox');
+            const resultContent = document.getElementById('resultContent');
+            
+            const query = input.value.trim();
+            
+            if (!query) {
+                alert('Please enter a question');
+                return;
+            }
+
+            // Disable button and show loading
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Searching...';
+            resultBox.style.display = 'block';
+            resultContent.textContent = 'Processing your query...\nThis may take 15-30 seconds...';
+
+            try {
+                const response = await fetch('/api/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ query })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Format the result nicely
+                    let output = `Query: ${data.query}\n\n`;
+                    output += `Answer:\n${data.answer}\n\n`;
+                    output += `Sources:\n`;
+                    data.sources.forEach((source, i) => {
+                        output += `${i + 1}. ${source.title}\n   ${source.url}\n`;
+                    });
+                    output += `\nProcessing Time: ${data.processingTime}`;
+                    
+                    resultContent.textContent = output;
+                } else {
+                    resultContent.textContent = `Error: ${data.error}\n${data.message || ''}`;
+                }
+            } catch (error) {
+                resultContent.textContent = `Error: ${error.message}`;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Search';
+            }
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('queryInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                testSearch();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -10,7 +10,7 @@ import time
 import sys
 
 # Configuration
-API_URL = "http://localhost:3000/api/search"
+API_URL = "https://323b2ed7-b05f-4f72-a1cf-100a54adc7a3-00-ijp4vpyqd8ks.pike.replit.dev/api/search"
 TEST_QUERY = "When is the release date of Sora 2?"
 
 def print_separator():
@@ -20,7 +20,7 @@ def test_health_check():
     """Test the health endpoint"""
     print("Testing health check endpoint...")
     try:
-        response = requests.get("http://localhost:3000/api/health", timeout=5)
+        response = requests.get("https://323b2ed7-b05f-4f72-a1cf-100a54adc7a3-00-ijp4vpyqd8ks.pike.replit.dev/api/health", timeout=5)
         if response.status_code == 200:
             print("✅ Health check passed:", response.json())
             return True
